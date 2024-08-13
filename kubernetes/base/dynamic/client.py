@@ -119,6 +119,8 @@ class DynamicClient(object):
         return self.request('post', path, body=body, **kwargs)
 
     def delete(self, resource, name=None, namespace=None, body=None, label_selector=None, field_selector=None, **kwargs):
+        _body = self.serialize_body(body)
+        name = name or _body.get('metadata', {}).get('name')
         if not (name or label_selector or field_selector):
             raise ValueError("At least one of name|label_selector|field_selector is required")
         if resource.namespaced and not (label_selector or field_selector or namespace):
